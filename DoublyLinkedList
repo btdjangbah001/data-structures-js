@@ -1,0 +1,151 @@
+class Node {
+    constructor (value){
+        this.value = value;
+        this.next = null;
+        this.previous = null;
+    }
+}
+
+class DoublyLinkedList {
+    head;
+    tail;
+    length = 0;
+
+    push (value){
+        let node = new Node(value);
+        if (!this.head){
+            this.head = node;
+            this.tail = node;
+        } else {
+            let prevNode = this.tail;
+            prevNode.next = node;
+            node.previous = prevNode;
+            this.tail = node;
+        }
+        this.length++;
+    }
+
+    pop (){
+        if (!this.head) return undefined;
+
+        let popped = this.tail;
+        if (this.head === this.tail){
+            this.head = null;
+            this.tail = null;
+            this.length--;
+            return popped;
+        }
+
+        let prevNode = popped.previous;
+        popped.previous = null;
+        prevNode.next = null;
+        this.tail = prevNode;
+        this.length--;
+        return popped;
+    }
+
+    shift (value){
+        if (!this.head) {
+            this.push(value);
+        } else {
+            let node = new Node(value);
+            let oldHead = this.head;
+            oldHead.previous = node;
+            node.next = oldHead;
+            this.head = node;
+            this.length++;
+        }
+    }
+
+    unshift (){
+        if (!this.head) return undefined;
+        
+        let popped = this.head;
+        if (this.head === this.tail){
+            this.head = null;
+            this.tail = null;
+            this.length--;
+            return popped;
+        }
+
+        let nextNode = this.head.next;
+        nextNode.previous = null;
+        popped.next = null;
+        this.head = nextNode;
+        this.length--;
+        return popped;
+    }
+
+    print (){
+        let arr = [];
+        let current = this.head;
+        for (let i = 0; i < this.length; i++){
+            arr.push(current.value);
+            current = current.next;
+        }
+        console.log(arr);
+    }
+
+    get (index){
+        if (index < 0 || index >= this.length) return undefined;
+        let current = this.head;
+        for (let i = 0; i < index; i++){
+            current = current.next;
+        }
+        return current;
+    }
+
+    set (value, index){
+        if (index < 0 || index > this.length) return false;
+        if (index === this.length) return !!this.push(value);
+
+        let node = this.get(index);
+        node.value = value;
+        return true;
+    }
+
+    insert (value, index) {
+        if (index < 0 || index > this.length) return false;
+        if (index === this.length) return !!this.push(value);
+        if (index === 0) return !!this.unshift(value);
+
+        let node = new Node(value);
+        let foundNode = this.get(index);
+        let prevNode = foundNode.previous;
+        node.next = foundNode;
+        node.previous = prevNode;
+        prevNode.next = node;
+        foundNode.previous = node;
+        this.length++; 
+        return true;
+    }
+
+    remove (index){
+        if (index < 0 || index >= this.length) return undefined;
+
+        let popped = this.get(index);
+        let prev = popped.previous;
+        let nextNode = popped.next;
+        prev.next = nextNode;
+        nextNode.previous = prev;
+        this.length--;
+        return popped;
+    }
+}
+
+
+let dll = new DoublyLinkedList();
+dll.push(10);
+dll.push(20);
+dll.push(30);
+dll.print();
+console.log("//////////////////////////////////////////////////////////");
+// console.log(dll.pop());
+// console.log(dll.pop());
+// console.log(dll.pop());
+// console.log(dll.unshift());
+dll.set(1, 2);
+dll.insert(50, 2);
+dll.remove(2);
+console.log("//////////////////////////////////////////////////////////");
+dll.print();
